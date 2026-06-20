@@ -4,6 +4,7 @@ from app.repositories.user_repository import (
     get_user,
     update_user,
     delete_user,
+    search_users,
 )
 
 
@@ -25,3 +26,15 @@ def update_existing_user(user_id: str, user):
 
 def delete_existing_user(user_id: str):
     return delete_user(user_id)
+
+
+def search_existing_users(
+    skill=None,
+    profession=None,
+    status=None,
+):
+    return search_users(
+        skill,
+        profession,
+        status,
+    )

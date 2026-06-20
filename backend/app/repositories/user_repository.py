@@ -63,3 +63,28 @@ def delete_user(user_id: str):
     client.delete(f"user:{user_id}")
 
     return existing_user
+
+
+def search_users(skill=None, profession=None, status=None):
+    users = get_all_users()
+
+    results = []
+
+    for user in users:
+        if skill:
+            if skill.lower() not in [
+                s.lower() for s in user["skills"]
+            ]:
+                continue
+
+        if profession:
+            if profession.lower() != user["profession"].lower():
+                continue
+
+        if status:
+            if status.lower() != user["status"].lower():
+                continue
+
+        results.append(user)
+
+    return results

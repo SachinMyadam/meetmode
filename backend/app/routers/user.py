@@ -7,6 +7,7 @@ from app.services.user_service import (
     fetch_user,
     update_existing_user,
     delete_existing_user,
+    search_existing_users,
 )
 
 router = APIRouter()
@@ -20,6 +21,19 @@ def create_user(user: UserCreate):
 @router.get("/users")
 def get_users():
     return fetch_all_users()
+
+
+@router.get("/users/search")
+def search_users(
+    skill: str = None,
+    profession: str = None,
+    status: str = None,
+):
+    return search_existing_users(
+        skill,
+        profession,
+        status,
+    )
 
 
 @router.get("/users/{user_id}")
