@@ -8,7 +8,6 @@ def create_user(user):
     user_data = user.model_dump()
 
     user_id = str(uuid4())
-
     user_data["id"] = user_id
 
     client.set(
@@ -53,3 +52,14 @@ def update_user(user_id: str, user):
     )
 
     return updated_user
+
+
+def delete_user(user_id: str):
+    existing_user = get_user(user_id)
+
+    if not existing_user:
+        return None
+
+    client.delete(f"user:{user_id}")
+
+    return existing_user

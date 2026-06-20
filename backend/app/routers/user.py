@@ -6,6 +6,7 @@ from app.services.user_service import (
     fetch_all_users,
     fetch_user,
     update_existing_user,
+    delete_existing_user,
 )
 
 router = APIRouter()
@@ -39,6 +40,21 @@ def update_user(user_id: str, user: UserUpdate):
 
     if updated_user:
         return updated_user
+
+    return {
+        "message": "User not found"
+    }
+
+
+@router.delete("/users/{user_id}")
+def delete_user(user_id: str):
+    deleted_user = delete_existing_user(user_id)
+
+    if deleted_user:
+        return {
+            "message": "User deleted successfully",
+            "user": deleted_user
+        }
 
     return {
         "message": "User not found"

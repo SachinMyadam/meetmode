@@ -3,6 +3,7 @@ from app.repositories.user_repository import (
     get_all_users,
     get_user,
     update_user,
+    delete_user,
 )
 
 
@@ -20,3 +21,7 @@ def fetch_user(user_id: str):
 
 def update_existing_user(user_id: str, user):
     return update_user(user_id, user)
+
+
+def delete_existing_user(user_id: str):
+    return delete_user(user_id)
