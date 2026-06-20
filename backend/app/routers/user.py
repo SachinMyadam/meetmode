@@ -1,10 +1,11 @@
 from fastapi import APIRouter
 
-from app.schemas.user import UserCreate
+from app.schemas.user import UserCreate, UserUpdate
 from app.services.user_service import (
     create_new_user,
     fetch_all_users,
     fetch_user,
+    update_existing_user,
 )
 
 router = APIRouter()
@@ -26,6 +27,18 @@ def get_single_user(user_id: str):
 
     if user:
         return user
+
+    return {
+        "message": "User not found"
+    }
+
+
+@router.put("/users/{user_id}")
+def update_user(user_id: str, user: UserUpdate):
+    updated_user = update_existing_user(user_id, user)
+
+    if updated_user:
+        return updated_user
 
     return {
         "message": "User not found"

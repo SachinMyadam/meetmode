@@ -9,3 +9,12 @@ class UserCreate(BaseModel):
     skills: List[str]
     interests: List[str]
     status: str
+
+
+class UserUpdate(BaseModel):
+    name: str
+    profession: str
+    bio: str
+    skills: List[str]
+    interests: List[str]
+    status: str

@@ -36,3 +36,20 @@ def get_user(user_id: str):
         return json.loads(data)
 
     return None
+
+
+def update_user(user_id: str, user):
+    existing_user = get_user(user_id)
+
+    if not existing_user:
+        return None
+
+    updated_user = user.model_dump()
+    updated_user["id"] = user_id
+
+    client.set(
+        f"user:{user_id}",
+        json.dumps(updated_user)
+    )
+
+    return updated_user
