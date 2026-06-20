@@ -88,3 +88,12 @@ def search_users(skill=None, profession=None, status=None):
         results.append(user)
 
     return results
+
+
+def get_users_paginated(page: int, limit: int):
+    users = get_all_users()
+
+    start = (page - 1) * limit
+    end = start + limit
+
+    return users[start:end]

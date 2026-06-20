@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import APIRouter
 
 from app.schemas.user import UserCreate, UserUpdate
@@ -7,7 +9,8 @@ from app.services.user_service import (
     fetch_user,
     update_existing_user,
     delete_existing_user,
-    search_existing_users,
+    search_all_users,
+    fetch_users_paginated,
 )
 
 router = APIRouter()
@@ -19,7 +22,13 @@ def create_user(user: UserCreate):
 
 
 @router.get("/users")
-def get_users():
+def get_users(
+    page: Optional[int] = None,
+    limit: Optional[int] = None,
+):
+    if page and limit:
+        return fetch_users_paginated(page, limit)
+
     return fetch_all_users()
 
 
@@ -29,7 +38,7 @@ def search_users(
     profession: str = None,
     status: str = None,
 ):
-    return search_existing_users(
+    return search_all_users(
         skill,
         profession,
         status,

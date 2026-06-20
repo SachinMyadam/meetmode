@@ -5,6 +5,7 @@ from app.repositories.user_repository import (
     update_user,
     delete_user,
     search_users,
+    get_users_paginated,
 )
 
 
@@ -28,13 +29,9 @@ def delete_existing_user(user_id: str):
     return delete_user(user_id)
 
 
-def search_existing_users(
-    skill=None,
-    profession=None,
-    status=None,
-):
-    return search_users(
-        skill,
-        profession,
-        status,
-    )
+def search_all_users(skill=None, profession=None, status=None):
+    return search_users(skill, profession, status)
+
+
+def fetch_users_paginated(page: int, limit: int):
+    return get_users_paginated(page, limit)
