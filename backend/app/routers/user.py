@@ -26,7 +26,7 @@ def get_users(
     page: Optional[int] = None,
     limit: Optional[int] = None,
 ):
-    if page and limit:
+    if page is not None and limit is not None:
         return fetch_users_paginated(page, limit)
 
     return fetch_all_users()
@@ -34,9 +34,9 @@ def get_users(
 
 @router.get("/users/search")
 def search_users(
-    skill: str = None,
-    profession: str = None,
-    status: str = None,
+    skill: Optional[str] = None,
+    profession: Optional[str] = None,
+    status: Optional[str] = None,
 ):
     return search_all_users(
         skill,
@@ -58,8 +58,14 @@ def get_single_user(user_id: str):
 
 
 @router.put("/users/{user_id}")
-def update_user(user_id: str, user: UserUpdate):
-    updated_user = update_existing_user(user_id, user)
+def update_user(
+    user_id: str,
+    user: UserUpdate,
+):
+    updated_user = update_existing_user(
+        user_id,
+        user,
+    )
 
     if updated_user:
         return updated_user
@@ -76,7 +82,7 @@ def delete_user(user_id: str):
     if deleted_user:
         return {
             "message": "User deleted successfully",
-            "user": deleted_user
+            "user": deleted_user,
         }
 
     return {
