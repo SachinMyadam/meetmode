@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5055";
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 async function request(path, options = {}) {
   const token = localStorage.getItem("mm_token");
@@ -12,15 +12,15 @@ async function request(path, options = {}) {
     body: options.body ? JSON.stringify(options.body) : undefined
   });
 
-  const data = await res.json().catch(() => null);
+  const data = await res.json().catch(() => ({}));
 
   if (!res.ok) {
-    throw new Error(data?.message || `HTTP Error ${res.status}`);
+    throw new Error(data.message || "Request failed");
   }
 
   return data;
 }
 
-export const get = (path) => request(path);
-export const post = (path, body) => request(path, { method: "POST", body });
-export const put = (path, body) => request(path, { method: "PUT", body });
+export const get = (p) => request(p);
+export const post = (p, b) => request(p, { method: "POST", body: b });
+export const put = (p, b) => request(p, { method: "PUT", body: b });
