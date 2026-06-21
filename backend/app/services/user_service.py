@@ -35,3 +35,10 @@ def search_all_users(skill=None, profession=None, status=None):
 
 def fetch_users_paginated(page: int, limit: int):
     return get_users_paginated(page, limit)
+
+def fetch_user_by_email(email: str):
+    from app.repositories.user_repository import (
+        get_user_by_email,
+    )
+
+    return get_user_by_email(email)

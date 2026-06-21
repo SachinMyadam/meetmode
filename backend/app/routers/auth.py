@@ -2,11 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app.core.dependencies import get_current_user
+from app.schemas.user import UserCreate
 from app.services.auth_service import (
     register_new_user,
     login_existing_user,
 )
-from app.schemas.user import UserCreate
 
 router = APIRouter()
 
@@ -44,8 +44,10 @@ def login(
 
 @router.get("/me")
 def get_me(
-    email: str = Depends(get_current_user),
+    current_user=Depends(get_current_user),
 ):
     return {
-        "email": email
+        "id": current_user["id"],
+        "name": current_user["name"],
+        "email": current_user["email"],
     }

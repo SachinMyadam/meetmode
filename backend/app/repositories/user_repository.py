@@ -12,7 +12,7 @@ def create_user(user):
 
     client.set(
         f"user:{user_id}",
-        json.dumps(user_data)
+        json.dumps(user_data),
     )
 
     return user_data
@@ -22,8 +22,10 @@ def get_all_users():
     users = []
 
     for key in client.keys("user:*"):
-        user = json.loads(client.get(key))
-        users.append(user)
+        data = client.get(key)
+
+        if data:
+            users.append(json.loads(data))
 
     return users
 
@@ -48,7 +50,7 @@ def update_user(user_id: str, user):
 
     client.set(
         f"user:{user_id}",
-        json.dumps(updated_user)
+        json.dumps(updated_user),
     )
 
     return updated_user
@@ -73,16 +75,16 @@ def search_users(skill=None, profession=None, status=None):
     for user in users:
         if skill:
             if skill.lower() not in [
-                s.lower() for s in user["skills"]
+                s.lower() for s in user.get("skills", [])
             ]:
                 continue
 
         if profession:
-            if profession.lower() != user["profession"].lower():
+            if user.get("profession", "").lower() != profession.lower():
                 continue
 
         if status:
-            if status.lower() != user["status"].lower():
+            if user.get("status", "").lower() != status.lower():
                 continue
 
         results.append(user)
@@ -97,3 +99,13 @@ def get_users_paginated(page: int, limit: int):
     end = start + limit
 
     return users[start:end]
+
+
+def get_user_by_email(email: str):
+    users = get_all_users()
+
+    for user in users:
+        if user.get("email") == email:
+            return user
+
+    return None
