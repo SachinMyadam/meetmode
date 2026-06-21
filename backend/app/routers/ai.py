@@ -1,43 +1,89 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-from app.services.ai_service import ai_service
+router = APIRouter(prefix="/ai", tags=["AI"])
 
-router = APIRouter(
-    prefix="/ai",
-    tags=["AI"],
-)
-
-
-class RememberRequest(BaseModel):
-    content: str
-    group_id: str = "default"
-
-
-class SearchRequest(BaseModel):
-    query: str
-    group_id: str = "default"
-
-
-@router.post("/remember")
-async def remember(request: RememberRequest):
-    return await ai_service.remember(
-        content=request.content,
-    )
-
-
-@router.post("/search")
-async def search(request: SearchRequest):
-    return await ai_service.search(
-        query=request.query,
-    )
+MATCHES = [
+    {
+        "name": "Neha Gupta",
+        "city": "Hyderabad",
+        "score": 75,
+        "matched": ["Python", "Oracle", "AI"],
+    },
+    {
+        "name": "Rahul Sharma",
+        "city": "Hyderabad",
+        "score": 50,
+        "matched": ["Python", "AI"],
+    },
+    {
+        "name": "Arjun Kumar",
+        "city": "Bangalore",
+        "score": 50,
+        "matched": ["Python", "AI"],
+    },
+    {
+        "name": "Priya Reddy",
+        "city": "Hyderabad",
+        "score": 25,
+        "matched": ["Oracle"],
+    },
+]
 
 
-@router.get("/groups")
-async def groups():
-    return await ai_service.groups()
+class ChatRequest(BaseModel):
+    message: str
 
 
-@router.get("/recommend/events")
-async def recommend_events():
-    return await ai_service.recommend_events()
+@router.post("/chat")
+async def chat(request: ChatRequest):
+    question = request.message.lower()
+
+    if "python" in question:
+        users = [
+            u["name"]
+            for u in MATCHES
+            if "Python" in u["matched"]
+        ]
+
+        return {
+            "reply": f"🐍 Python developers: {', '.join(users)}"
+        }
+
+    if "oracle" in question:
+        users = [
+            u["name"]
+            for u in MATCHES
+            if "Oracle" in u["matched"]
+        ]
+
+        return {
+            "reply": f"🗄️ Oracle experts: {', '.join(users)}"
+        }
+
+    if "hyderabad" in question:
+        users = [
+            u["name"]
+            for u in MATCHES
+            if u["city"] == "Hyderabad"
+        ]
+
+        return {
+            "reply": f"📍 Hyderabad members: {', '.join(users)}"
+        }
+
+    if "best" in question or "match" in question:
+        best = max(MATCHES, key=lambda x: x["score"])
+
+        return {
+            "reply": f"🏆 Best match: {best['name']} ({best['score']}%)"
+        }
+
+    if "friends" in question:
+        return {
+            "reply": f"🤝 I found {len(MATCHES)} networking recommendations."
+        }
+
+    return {
+        "reply": "👋 Ask me about Python, Oracle, Hyderabad, friends or your best match."
+    }

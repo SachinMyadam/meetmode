@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.routers.auth import router as auth_router
 from app.routers.user import router as user_router
@@ -9,11 +10,21 @@ from app.routers.chat import router as chat_router
 from app.routers.notification import router as notification_router
 from app.routers.qr import router as qr_router
 from app.routers.ai import router as ai_router
+from app.routers.match import router as match_router
+from app.routers.event_register import router as event_register_router
 
 app = FastAPI(
     title="MeetMode API",
     version="1.0.0",
     description="Backend API for MeetMode",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(auth_router)
@@ -25,7 +36,8 @@ app.include_router(chat_router)
 app.include_router(notification_router)
 app.include_router(qr_router)
 app.include_router(ai_router)
-
+app.include_router(match_router)
+app.include_router(event_register_router)
 
 @app.get("/")
 def home():
