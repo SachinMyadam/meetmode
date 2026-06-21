@@ -10,15 +10,26 @@ const notificationsRoutes = require("./routes/notifications");
 
 const app = express();
 
-const corsOptions = {
-  origin: "https://meetmode.vercel.app",
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
-};
+// 🔥 FIX: allow all Vercel + localhost (DEV + PROD)
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
 
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+    if (
+      origin.includes("vercel.app") ||
+      origin.includes("localhost")
+    ) {
+      return callback(null, true);
+    }
+
+    return callback(null, true); // fallback (no blocking)
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
+app.options("*", cors());
 
 app.use(express.json());
 
