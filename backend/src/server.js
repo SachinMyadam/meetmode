@@ -10,36 +10,33 @@ const notificationsRoutes = require("./routes/notifications");
 
 const app = express();
 
-// 🔥 FIX: allow all Vercel + localhost (DEV + PROD)
+/* ✅ CLEAN CORS CONFIG (ONLY ONCE) */
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-
-    if (
-      origin.includes("vercel.app") ||
-      origin.includes("localhost")
-    ) {
-      return callback(null, true);
-    }
-
-    return callback(null, true); // fallback (no blocking)
-  },
+  origin: "https://meetmode.vercel.app",
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-app.options("*", cors());
-
 app.use(express.json());
 
-app.get("/health", (_req, res) => res.json({ ok: true }));
+app.get("/health", (req, res) => {
+  res.json({ ok: true });
+});
 
+/* ROUTES */
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 app.use("/events", eventsRoutes);
 app.use("/chat", chatRoutes);
 app.use("/notifications", notificationsRoutes);
 
+/* 404 HANDLER (SAFE - NO *) */
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
+
 const port = process.env.PORT || 5000;
-app.listen(port, () => console.log(`MeetMode backend running on ${port}`));
+app.listen(port, () => {
+  console.log(`MeetMode backend running on ${port}`);
+});
