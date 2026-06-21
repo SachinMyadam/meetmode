@@ -6,22 +6,16 @@ async function request(path, options = {}) {
   const res = await fetch(`${BASE_URL}${path}`, {
     method: options.method || "GET",
     headers: {
-      ...(options.body ? { "Content-Type": "application/json" } : {}),
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(options.headers || {})
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {})
     },
     body: options.body ? JSON.stringify(options.body) : undefined
   });
 
-  let data = null;
-  try {
-    data = await res.json();
-  } catch {
-    data = null;
-  }
+  const data = await res.json().catch(() => null);
 
   if (!res.ok) {
-    throw new Error(data?.message || "Request failed");
+    throw new Error(data?.message || `HTTP Error ${res.status}`);
   }
 
   return data;
