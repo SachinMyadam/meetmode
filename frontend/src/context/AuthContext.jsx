@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { get, post, put } from "../api/client";
+import { get, post } from "../api/client";
 
 const AuthContext = createContext({
   user: null,
-  loading: true,
+  loading: false,
   login: async () => {},
   signup: async () => {},
   logout: async () => {},
@@ -12,14 +12,24 @@ const AuthContext = createContext({
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const refreshUser = async () => {
+    const token = localStorage.getItem("mm_token");
+
+    if (!token) {
+      setUser(null);
+      setLoading(false);
+      return null;
+    }
+
+    setLoading(true);
     try {
       const data = await get("/auth/me");
-      setUser(data.user || null);
-      return data.user || null;
-    } catch (err) {
+      const nextUser = data?.user || null;
+      setUser(nextUser);
+      return nextUser;
+    } catch {
       localStorage.removeItem("mm_token");
       setUser(null);
       return null;
@@ -29,12 +39,7 @@ export function AuthProvider({ children }) {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("mm_token");
-    if (token) {
-      refreshUser();
-    } else {
-      setLoading(false);
-    }
+    refreshUser();
   }, []);
 
   const login = async ({ email, password }) => {
@@ -60,14 +65,7 @@ export function AuthProvider({ children }) {
   };
 
   const value = useMemo(
-    () => ({
-      user,
-      loading,
-      login,
-      signup,
-      logout,
-      refreshUser,
-    }),
+    () => ({ user, loading, login, signup, logout, refreshUser }),
     [user, loading]
   );
 
