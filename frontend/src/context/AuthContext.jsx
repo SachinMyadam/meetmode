@@ -1,63 +1,54 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { get, post, put } from "../api/client";
 
-const AuthContext = createContext(null);
-const THEME_KEY = "mm_theme";
-
-function applyTheme(theme) {
-  document.body.classList.toggle("light", theme === "light");
-}
+const AuthContext = createContext({
+  user: null,
+  loading: true,
+  login: async () => {},
+  signup: async () => {},
+  logout: async () => {},
+  refreshUser: async () => {},
+});
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [ready, setReady] = useState(false);
-  const [theme, setThemeState] = useState("dark");
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const savedTheme = localStorage.getItem(THEME_KEY) || "dark";
-    setThemeState(savedTheme);
-    applyTheme(savedTheme);
-
-    const token = localStorage.getItem("mm_token");
-    const savedUser = localStorage.getItem("mm_user");
-
-    if (token && savedUser) {
-      setUser(JSON.parse(savedUser));
-      get("/auth/me")
-        .then((res) => {
-          setUser(res.user);
-          localStorage.setItem("mm_user", JSON.stringify(res.user));
-        })
-        .catch(() => {
-          localStorage.removeItem("mm_token");
-          localStorage.removeItem("mm_user");
-          setUser(null);
-        });
+  const refreshUser = async () => {
+    try {
+      const data = await get("/auth/me");
+      setUser(data.user || null);
+      return data.user || null;
+    } catch (err) {
+      localStorage.removeItem("mm_token");
+      setUser(null);
+      return null;
+    } finally {
+      setLoading(false);
     }
-
-    setReady(true);
-  }, []);
-
-  const setTheme = (next) => {
-    setThemeState(next);
-    localStorage.setItem(THEME_KEY, next);
-    applyTheme(next);
   };
 
-  const login = async (email, password) => {
-    const res = await post("/auth/login", { email, password });
-    localStorage.setItem("mm_token", res.token);
-    localStorage.setItem("mm_user", JSON.stringify(res.user));
-    setUser(res.user);
-    return res.user;
+  useEffect(() => {
+    const token = localStorage.getItem("mm_token");
+    if (token) {
+      refreshUser();
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  const login = async ({ email, password }) => {
+    const data = await post("/auth/login", { email, password });
+    localStorage.setItem("mm_token", data.token);
+    setUser(data.user || null);
+    return data;
   };
 
   const signup = async (payload) => {
-    const res = await post("/auth/signup", payload);
-    localStorage.setItem("mm_token", res.token);
-    localStorage.setItem("mm_user", JSON.stringify(res.user));
-    setUser(res.user);
-    return res.user;
+    const data = await post("/auth/signup", payload);
+    localStorage.setItem("mm_token", data.token);
+    setUser(data.user || null);
+    return data;
   };
 
   const logout = async () => {
@@ -65,23 +56,26 @@ export function AuthProvider({ children }) {
       await post("/auth/logout", {});
     } catch {}
     localStorage.removeItem("mm_token");
-    localStorage.removeItem("mm_user");
     setUser(null);
   };
 
-  const updateProfile = async (payload) => {
-    const res = await put("/user/me", payload);
-    localStorage.setItem("mm_user", JSON.stringify(res.user));
-    setUser(res.user);
-    return res.user;
-  };
-
   const value = useMemo(
-    () => ({ user, ready, theme, setTheme, login, signup, logout, updateProfile }),
-    [user, ready, theme]
+    () => ({
+      user,
+      loading,
+      login,
+      signup,
+      logout,
+      refreshUser,
+    }),
+    [user, loading]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-export const useAuth = () => useContext(AuthContext);
+export function useAuth() {
+  return useContext(AuthContext);
+}
+
+export default AuthContext;
