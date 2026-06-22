@@ -10,9 +10,11 @@ const notificationsRoutes = require("./routes/notifications");
 
 const app = express();
 
-/* ✅ CLEAN CORS CONFIG (ONLY ONCE) */
 app.use(cors({
-  origin: "https://meetmode.vercel.app",
+  origin: [
+    "http://localhost:5173",
+    "https://meetmode.vercel.app"
+  ],
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
@@ -24,14 +26,14 @@ app.get("/health", (req, res) => {
   res.json({ ok: true });
 });
 
-/* ROUTES */
-app.use("/auth", authRoutes);
-app.use("/user", userRoutes);
-app.use("/events", eventsRoutes);
-app.use("/chat", chatRoutes);
-app.use("/notifications", notificationsRoutes);
+/* ✅ FIXED API PREFIX */
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/events", eventsRoutes);
+app.use("/api/chat", chatRoutes);
+app.use("/api/notifications", notificationsRoutes);
 
-/* 404 HANDLER (SAFE - NO *) */
+/* 404 */
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
