@@ -1,87 +1,43 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Signup() {
-  const [name, setName] = useState("Sachin");
-  const [email, setEmail] = useState("sachin123@test.com");
-  const [password, setPassword] = useState("123456");
-  const [city, setCity] = useState("Hyderabad");
-  const [interests, setInterests] = useState("AI, Valkey, Hackathons");
-  const [error, setError] = useState("");
   const { signup } = useAuth();
   const navigate = useNavigate();
+  const [name, setName] = useState("Sachin");
+  const [email, setEmail] = useState("test@test.com");
+  const [password, setPassword] = useState("123456");
+  const [city, setCity] = useState("Hyderabad");
+  const [error, setError] = useState("");
 
-  const submit = async (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     setError("");
     try {
-      await signup({
-        name,
-        email,
-        password,
-        city,
-        interests: interests.split(",").map((v) => v.trim()).filter(Boolean),
-      });
+      await signup({ name, email, password, city });
       navigate("/");
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Signup failed");
     }
   };
 
   return (
-    <div className="auth-wrap">
-      <div className="auth-card">
-        <div className="auth-title">✨ Sign Up</div>
-        <div className="auth-subtitle">Create Account</div>
-
-        <form onSubmit={submit}>
-          <div className="form-group">
-            <label>Name</label>
-            <input className="input" value={name} onChange={(e) => setName(e.target.value)} />
-          </div>
-
-          <div className="form-group">
-            <label>Email</label>
-            <input className="input" value={email} onChange={(e) => setEmail(e.target.value)} />
-          </div>
-
-          <div className="form-group">
-            <label>Password</label>
-            <input
-              className="input"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>City</label>
-            <input className="input" value={city} onChange={(e) => setCity(e.target.value)} />
-          </div>
-
-          <div className="form-group">
-            <label>Interests</label>
-            <input className="input" value={interests} onChange={(e) => setInterests(e.target.value)} />
-          </div>
-
-          {error ? <div className="empty-state" style={{ color: "#ff6b6b" }}>{error}</div> : null}
-
-          <button className="btn" style={{ width: "100%" }} type="submit">
-            Sign Up
-          </button>
-        </form>
-
-        <div className="form-actions" style={{ marginTop: 18 }}>
-          <span className="empty-state" style={{ padding: 0 }}>
-            Already have account?
-          </span>
-          <Link className="auth-link" to="/login">
-            Login
-          </Link>
-        </div>
-      </div>
+    <div style={{ padding: 24, maxWidth: 360, margin: "0 auto" }}>
+      <h1>MeetMode Signup</h1>
+      <form onSubmit={onSubmit}>
+        <input style={{ width: "100%", marginBottom: 12, padding: 10 }} value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" />
+        <input style={{ width: "100%", marginBottom: 12, padding: 10 }} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
+        <input style={{ width: "100%", marginBottom: 12, padding: 10 }} type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
+        <input style={{ width: "100%", marginBottom: 12, padding: 10 }} value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" />
+        {error ? <p style={{ color: "red" }}>{error}</p> : null}
+        <button style={{ width: "100%", padding: 10 }} type="submit">
+          Sign Up
+        </button>
+      </form>
+      <p style={{ marginTop: 12 }}>
+        Already have account? <Link to="/login">Login</Link>
+      </p>
     </div>
   );
 }
