@@ -1,61 +1,45 @@
 import { useState } from "react";
-import { setUserInterests, getUserProfile } from "../lib/userProfile";
+import { useAuth } from "../context/AuthContext";
 
 export default function Interests() {
-  const profile = getUserProfile();
-
-  const [selected, setSelected] = useState(profile.interests || []);
-
-  const options = ["React", "AI", "Python", "JavaScript", "Fitness", "Travel", "Coffee"];
+  const { user, updateProfile } = useAuth();
+  const [selected, setSelected] = useState(user?.interests || []);
+  const options = ["React", "AI", "Python", "JavaScript", "Fitness", "Travel", "Coffee", "Open Source", "Startups"];
 
   const toggle = (item) => {
-    if (selected.includes(item)) {
-      setSelected(selected.filter(i => i !== item));
-    } else {
-      setSelected([...selected, item]);
-    }
+    if (selected.includes(item)) setSelected(selected.filter((i) => i !== item));
+    else setSelected([...selected, item]);
   };
 
-  const save = () => {
-    setUserInterests(selected);
+  const save = async () => {
+    await updateProfile({ interests: selected });
     alert("Interests saved!");
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>🎯 Select Your Interests</h2>
+    <div>
+      <h1 className="page-title">Interests</h1>
+      <p className="page-subtitle">Pick the topics Breeth AI should remember</p>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-        {options.map(opt => (
-          <button
-            key={opt}
-            onClick={() => toggle(opt)}
-            style={{
-              padding: "10px",
-              background: selected.includes(opt) ? "#2563eb" : "#1e293b",
-              color: "white",
-              border: "none",
-              borderRadius: "8px"
-            }}
-          >
-            {opt}
-          </button>
-        ))}
+      <div className="card">
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+          {options.map((opt) => (
+            <button
+              key={opt}
+              onClick={() => toggle(opt)}
+              className="chip"
+              style={{
+                background: selected.includes(opt) ? "linear-gradient(135deg, rgba(91,140,255,.30), rgba(124,92,255,.24))" : "var(--panel)",
+                borderColor: selected.includes(opt) ? "rgba(91,140,255,.45)" : "var(--border)",
+              }}
+            >
+              {opt}
+            </button>
+          ))}
+        </div>
+
+        <button className="btn" onClick={save} style={{ marginTop: 16 }}>Save Interests</button>
       </div>
-
-      <button
-        onClick={save}
-        style={{
-          marginTop: "20px",
-          padding: "10px 15px",
-          background: "green",
-          border: "none",
-          color: "white",
-          borderRadius: "8px"
-        }}
-      >
-        Save Interests
-      </button>
     </div>
   );
 }

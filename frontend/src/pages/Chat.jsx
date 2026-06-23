@@ -10,44 +10,35 @@ export default function Chat() {
     setMessages(res.messages || []);
   };
 
-  useEffect(() => {
-    load();
-  }, []);
+  useEffect(() => { load(); }, []);
 
   const send = async () => {
     if (!text.trim()) return;
-    await post("/chat/send", {
-      room: "global",
-      message: { text },
-    });
+    await post("/chat/send", { room: "global", message: { text } });
     setText("");
     load();
   };
 
   return (
     <div>
-      <h1 className="page-title">💬 Chat Page</h1>
-      <p className="page-subtitle">People-to-people conversation</p>
+      <h1 className="page-title">Chat</h1>
+      <p className="page-subtitle">Global networking room for your event</p>
 
       <div className="message-shell">
         <div className="card message-list">
-          <h2 className="section-title" style={{ marginTop: 0 }}>
-            Chats
-          </h2>
-          <div className="card soft">
+          <div className="section-title">Chats</div>
+          <div className="soft">
             <div style={{ fontWeight: 800 }}>Global Room</div>
-            <div className="empty-state" style={{ padding: "8px 0 0" }}>
-              MeetMode group conversation
-            </div>
+            <div className="muted">One shared conversation for the event</div>
           </div>
         </div>
 
         <div className="message-panel">
-          <div className="chat-board">
-            {messages.map((message) => (
-              <div key={message.id || `${message.user}-${message.time}`} className={`bubble ${message.mine ? "me" : ""}`}>
-                <div style={{ fontWeight: 800, marginBottom: 6 }}>{message.user}</div>
-                <div>{message.text}</div>
+          <div className="card chat-board">
+            {messages.map((m) => (
+              <div key={m.id || `${m.user}-${m.time}`} className={`bubble ${m.mine ? "me" : ""}`}>
+                <div style={{ fontWeight: 800, marginBottom: 6 }}>{m.user}</div>
+                <div>{m.text}</div>
               </div>
             ))}
           </div>
@@ -60,9 +51,7 @@ export default function Chat() {
               onChange={(e) => setText(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && send()}
             />
-            <button className="btn" onClick={send}>
-              Send
-            </button>
+            <button className="btn" onClick={send}>Send</button>
           </div>
         </div>
       </div>

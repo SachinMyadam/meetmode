@@ -10,10 +10,7 @@ export default function Friends() {
     setFriends(res.friends || []);
   };
 
-  useEffect(() => {
-    load();
-  }, []);
-
+  useEffect(() => { load(); }, []);
   useEffect(() => {
     const id = setTimeout(() => load(query), 250);
     return () => clearTimeout(id);
@@ -21,13 +18,13 @@ export default function Friends() {
 
   return (
     <div>
-      <h1 className="page-title">🤝 Friends</h1>
-      <p className="page-subtitle">Find people by name, city, skill, or interest</p>
+      <h1 className="page-title">Nearby People</h1>
+      <p className="page-subtitle">Only people in the same event and Meet Mode are visible</p>
 
       <input
         className="input"
         style={{ maxWidth: 560, marginBottom: 18 }}
-        placeholder="Search by name, city, or skill..."
+        placeholder="Search by name, city, skill, or interest..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
@@ -36,23 +33,20 @@ export default function Friends() {
         Total Matches: {friends.length}
       </div>
 
-      {friends.length === 0 ? (
-        <div className="empty-state">No matches yet.</div>
-      ) : (
-        friends.map((friend) => (
-          <div className="card event-card" key={friend.id}>
+      <div className="event-list" style={{ marginTop: 14 }}>
+        {friends.length === 0 ? (
+          <div className="empty-state">No visible people yet. Join an event and switch to Meet Mode.</div>
+        ) : friends.map((friend) => (
+          <div className="event-card" key={friend.id}>
             <div className="event-head">{friend.name}</div>
             <div className="badge">{friend.match}% Match</div>
-            <div className="meta">📍 {friend.city}</div>
-            <div className="empty-state" style={{ padding: "10px 0 0" }}>
-              <b>Skills:</b> {friend.skills.join(", ")}
-            </div>
-            <div className="empty-state" style={{ padding: "8px 0 0" }}>
-              <b>Interests:</b> {friend.interests.join(", ")}
-            </div>
+            <div className="meta">{friend.profession || "Professional"} · 📍 {friend.city || "Event"}</div>
+            <div className="meta"><b>Skills:</b> {friend.skills?.join(", ") || "-"}</div>
+            <div className="meta"><b>Interests:</b> {friend.interests?.join(", ") || "-"}</div>
+            <div className="meta"><b>Goal:</b> {friend.networkingGoal || "-"}</div>
           </div>
-        ))
-      )}
+        ))}
+      </div>
     </div>
   );
 }

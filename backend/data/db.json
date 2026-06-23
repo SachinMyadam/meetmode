@@ -1,0 +1,162 @@
+{
+  "users": [
+    {
+      "id": "u_neha",
+      "name": "Neha Gupta",
+      "email": "neha@example.com",
+      "password": "$2b$10$izDVNscgkwRGT.HO9yQGj.mDuBSUIJigHmkTzMuh63as//VVh3ND.",
+      "profession": "Software Engineer",
+      "company": "Open Source",
+      "city": "Hyderabad",
+      "skills": [
+        "Python",
+        "Oracle",
+        "AI"
+      ],
+      "interests": [
+        "AI",
+        "Open Source",
+        "Startups"
+      ],
+      "networkingGoal": "Collaborate and mentor",
+      "eventId": "e_hyd",
+      "mode": "meet",
+      "createdAt": "2026-06-23T10:51:48.491Z"
+    },
+    {
+      "id": "u_rahul",
+      "name": "Rahul Sharma",
+      "email": "rahul@example.com",
+      "password": "$2b$10$izDVNscgkwRGT.HO9yQGj.mDuBSUIJigHmkTzMuh63as//VVh3ND.",
+      "profession": "Data Analyst",
+      "company": "Valkey Labs",
+      "city": "Hyderabad",
+      "skills": [
+        "Python",
+        "AI"
+      ],
+      "interests": [
+        "Networking",
+        "Data",
+        "AI"
+      ],
+      "networkingGoal": "Find startup ideas",
+      "eventId": "e_hyd",
+      "mode": "meet",
+      "createdAt": "2026-06-23T10:51:48.491Z"
+    },
+    {
+      "id": "u_arjun",
+      "name": "Arjun Kumar",
+      "email": "arjun@example.com",
+      "password": "$2b$10$izDVNscgkwRGT.HO9yQGj.mDuBSUIJigHmkTzMuh63as//VVh3ND.",
+      "profession": "Full Stack Developer",
+      "company": "Amazon",
+      "city": "Bangalore",
+      "skills": [
+        "React",
+        "Node",
+        "AI"
+      ],
+      "interests": [
+        "Open Source",
+        "Hackathons"
+      ],
+      "networkingGoal": "Build products with teams",
+      "eventId": "e_hyd",
+      "mode": "meet",
+      "createdAt": "2026-06-23T10:51:48.491Z"
+    },
+    {
+      "id": "u_1782211959646",
+      "name": "sachin",
+      "email": "sachin@test.com",
+      "password": "$2b$10$jQr.c.DldAVAHNKUtqdRHOySG6Lm3CRazdIukGgnMxTG0HjAkYoJy",
+      "profession": "Oracle DBA",
+      "company": "Test",
+      "city": "test",
+      "skills": [
+        "Python",
+        "SQL"
+      ],
+      "interests": [
+        "AI",
+        "opensource",
+        "coding"
+      ],
+      "networkingGoal": "learn",
+      "eventId": null,
+      "eventCode": null,
+      "mode": "focus",
+      "createdAt": "2026-06-23T10:52:39.755Z"
+    }
+  ],
+  "events": [
+    {
+      "id": "e_hyd",
+      "title": "React Hyderabad Meetup",
+      "city": "Hyderabad",
+      "venue": "Amazon HYD13",
+      "date": "28 June 2026",
+      "code": "EVT-HYD-2026",
+      "attendees": 1248
+    },
+    {
+      "id": "e_valkey",
+      "title": "Valkey Workshop",
+      "city": "Hyderabad",
+      "venue": "Amazon HYD13",
+      "date": "30 June 2026",
+      "code": "VALKEY-2026",
+      "attendees": 312
+    },
+    {
+      "id": "e_startup",
+      "title": "Startup Networking Night",
+      "city": "Bangalore",
+      "venue": "Community Hub",
+      "date": "5 July 2026",
+      "code": "STARTUP-2026",
+      "attendees": 510
+    }
+  ],
+  "messages": [
+    {
+      "id": 1,
+      "room": "global",
+      "user": "MeetMode AI",
+      "text": "Welcome to the event room.",
+      "time": "2026-06-23T10:51:48.491Z"
+    },
+    {
+      "id": 2,
+      "room": "global",
+      "user": "MeetMode AI",
+      "text": "Turn on Meet Mode to be discoverable.",
+      "time": "2026-06-23T10:51:48.491Z"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "n_1782211959755",
+      "userId": "u_1782211959646",
+      "title": "Welcome to MeetMode",
+      "body": "Create your profile and join an event to start networking.",
+      "createdAt": "2026-06-23T10:52:39.755Z"
+    },
+    {
+      "id": "n_1782211994012",
+      "userId": "u_1782211959646",
+      "title": "Meet Mode updated",
+      "body": "Your status is now Meet Mode.",
+      "createdAt": "2026-06-23T10:53:14.012Z"
+    },
+    {
+      "id": "n_1782211994810",
+      "userId": "u_1782211959646",
+      "title": "Meet Mode updated",
+      "body": "Your status is now Focus Mode.",
+      "createdAt": "2026-06-23T10:53:14.810Z"
+    }
+  ]
+}

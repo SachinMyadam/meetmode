@@ -3,22 +3,34 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Profile() {
   const { user, updateProfile } = useAuth();
-  const [name, setName] = useState("");
-  const [city, setCity] = useState("");
-  const [interests, setInterests] = useState("");
+  const [form, setForm] = useState({
+    name: "",
+    profession: "",
+    company: "",
+    city: "",
+    skills: "",
+    interests: "",
+    networkingGoal: "",
+  });
   const [saved, setSaved] = useState("");
 
   useEffect(() => {
-    setName(user?.name || "");
-    setCity(user?.city || "");
-    setInterests((user?.interests || []).join(", "));
+    setForm({
+      name: user?.name || "",
+      profession: user?.profession || "",
+      company: user?.company || "",
+      city: user?.city || "",
+      skills: (user?.skills || []).join(", "),
+      interests: (user?.interests || []).join(", "),
+      networkingGoal: user?.networkingGoal || "",
+    });
   }, [user]);
 
   const save = async () => {
     const next = await updateProfile({
-      name,
-      city,
-      interests: interests.split(",").map((v) => v.trim()).filter(Boolean),
+      ...form,
+      skills: form.skills.split(",").map((v) => v.trim()).filter(Boolean),
+      interests: form.interests.split(",").map((v) => v.trim()).filter(Boolean),
     });
     setSaved(`Saved for ${next.name}`);
     setTimeout(() => setSaved(""), 1500);
@@ -26,47 +38,25 @@ export default function Profile() {
 
   return (
     <div>
-      <h1 className="page-title">👤 Profile</h1>
-      <p className="page-subtitle">Edit your public profile</p>
+      <h1 className="page-title">Profile</h1>
+      <p className="page-subtitle">Edit your public networking profile</p>
 
-      <div className="card profile-card">
-        <h2 className="section-title" style={{ marginTop: 0 }}>
-          {user?.name || "No Name"}
-        </h2>
-
-        <div className="empty-state" style={{ padding: 0 }}>
-          <b>Email:</b> {user?.email || "Not available"}
+      <div className="card">
+        <div className="form-grid">
+          <div className="form-group"><label>Name</label><input className="input" value={form.name} onChange={(e)=>setForm({...form,name:e.target.value})} /></div>
+          <div className="form-group"><label>Profession</label><input className="input" value={form.profession} onChange={(e)=>setForm({...form,profession:e.target.value})} /></div>
+          <div className="form-group"><label>Company / College</label><input className="input" value={form.company} onChange={(e)=>setForm({...form,company:e.target.value})} /></div>
+          <div className="form-group"><label>City</label><input className="input" value={form.city} onChange={(e)=>setForm({...form,city:e.target.value})} /></div>
+          <div className="form-group"><label>Skills</label><input className="input" value={form.skills} onChange={(e)=>setForm({...form,skills:e.target.value})} /></div>
+          <div className="form-group"><label>Interests</label><input className="input" value={form.interests} onChange={(e)=>setForm({...form,interests:e.target.value})} /></div>
+          <div className="form-group" style={{ gridColumn: "1 / -1" }}><label>Networking Goal</label><input className="input" value={form.networkingGoal} onChange={(e)=>setForm({...form,networkingGoal:e.target.value})} /></div>
         </div>
-        <div className="empty-state" style={{ padding: "8px 0 0" }}>
-          <b>User ID:</b> {user?.id || "N/A"}
+
+        <div className="form-actions">
+          <button className="btn" onClick={save}>Save Profile</button>
         </div>
 
-        <div style={{ marginTop: 22 }}>
-          <div className="form-group">
-            <label>Name</label>
-            <input className="input" value={name} onChange={(e) => setName(e.target.value)} />
-          </div>
-
-          <div className="form-group">
-            <label>City</label>
-            <input className="input" value={city} onChange={(e) => setCity(e.target.value)} />
-          </div>
-
-          <div className="form-group">
-            <label>Interests</label>
-            <input className="input" value={interests} onChange={(e) => setInterests(e.target.value)} />
-          </div>
-
-          <button className="btn" onClick={save}>
-            Save Profile
-          </button>
-
-          {saved ? (
-            <div className="empty-state" style={{ paddingTop: 12 }}>
-              {saved}
-            </div>
-          ) : null}
-        </div>
+        {saved ? <div className="empty-state" style={{ marginTop: 14 }}>{saved}</div> : null}
       </div>
     </div>
   );

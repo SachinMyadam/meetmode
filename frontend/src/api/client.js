@@ -1,15 +1,17 @@
-const BASE_URL = import.meta.env.VITE_API_URL;
+const RAW_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5055";
+const BASE_URL = RAW_BASE_URL.replace(/\/$/, "");
+const API_BASE_URL = BASE_URL.endsWith("/api") ? BASE_URL : `${BASE_URL}/api`;
 
 async function request(path, options = {}) {
   const token = localStorage.getItem("mm_token");
 
-  const res = await fetch(`${BASE_URL}${path}`, {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
     method: options.method || "GET",
     headers: {
       "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {})
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
-    body: options.body ? JSON.stringify(options.body) : undefined
+    body: options.body ? JSON.stringify(options.body) : undefined,
   });
 
   const data = await res.json().catch(() => ({}));
