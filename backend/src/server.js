@@ -167,6 +167,14 @@ app.use(express.json());
 
 app.get("/health", (req, res) => res.json({ ok: true }));
 
+app.get("/version", (req, res) => {
+  res.json({
+    commit: "c13f276",
+    loginRoute: true,
+    time: new Date().toISOString()
+  });
+});
+
 app.post("/api/auth/signup", (req, res) => {
   const db = loadDB();
   const {
